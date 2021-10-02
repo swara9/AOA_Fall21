@@ -16,7 +16,6 @@ public class MinimumSpanningTree {
 
         List<Edge> sortedEdges = graph.allEdges;
         int edgesCount = graph.edges;
-        int v = graph.vertices;
         while( edgesCount > (graph.vertices-1)){
             //remove longest route
             Edge currentEdge = sortedEdges.get(0);
@@ -24,7 +23,7 @@ public class MinimumSpanningTree {
             int node2 = currentEdge.node2;
             graph.removeEdge(node1, node2);
             graph.allEdges.remove(0);
-            //check if graph is disconnected
+//            check if graph is disconnected
             if(!graph.isConnected()){
                 graph.addEdge(node1, node2, currentEdge.weight);
                 System.out.println("graph disconnected! "+currentEdge.toString());
@@ -62,8 +61,10 @@ public class MinimumSpanningTree {
 
 
         RandomConnectedGraphGenerator randomGraph = new RandomConnectedGraphGenerator();
+        System.out.println("\nThe generated random graph: ");
         randomGraph.getGraph().printGraph();
         Graph MST2 = MinimumSpanningTree.generateMST(randomGraph.getGraph());
+        System.out.println("\nMinimum Spanning Tree: ");
         MST2.printGraph();
     }
 

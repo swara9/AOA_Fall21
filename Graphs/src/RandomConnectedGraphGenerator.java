@@ -9,7 +9,7 @@ public class RandomConnectedGraphGenerator {
         return graph;
     }
     // Set a maximum limit to the vertices
-    final int MAX_LIMIT = 20;
+    final int MAX_LIMIT = 500;
     final int MAX_WEIGHT = 20;
 
     Random random = new Random();
@@ -37,7 +37,8 @@ public class RandomConnectedGraphGenerator {
 
             // Check if there is already an edge between v
             // and w
-            if ((i == w) || graph.adjacencyList.get(i).contains(w)) {
+            if ((i == w) || graph.adjacencyList.get(i).contains(new Edge(i,w)) ||
+                    graph.adjacencyList.get(w).contains(new Edge(w,i))) {
                 // Reduce the value of i
                 // so that again v and w can be chosen
                 // for the same edge count
@@ -49,7 +50,6 @@ public class RandomConnectedGraphGenerator {
         }
 
         int diff = graph.edges-graph.vertices;
-        System.out.println("=========Diff: "+diff);
         // A for loop to randomly generate edges
         for (int i = 0; i < diff; i++) {
             // Randomly select two vertices to
@@ -59,7 +59,7 @@ public class RandomConnectedGraphGenerator {
 
             // Check if there is already an edge between v
             // and w
-            if ((v == w) || graph.adjacencyList.get(v).contains(w)) {
+            if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(i,w))|| graph.adjacencyList.get(w).contains(new Edge(w,i))) {
                 // Reduce the value of i
                 // so that again v and w can be chosen
                 // for the same edge count

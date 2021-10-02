@@ -64,7 +64,7 @@ public class Graph {
 
     public void printGraph() {
         // Print the graph
-        System.out.println("\nThe generated random graph :");
+        System.out.println();
         for (int i = 0; i < adjacencyList.size(); i++) {
             System.out.print(i + " -> { ");
 
