@@ -1,5 +1,4 @@
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
 
 public class RandomConnectedGraphGenerator {
 
@@ -9,47 +8,59 @@ public class RandomConnectedGraphGenerator {
         return graph;
     }
     // Set a maximum limit to the vertices
-    final int MAX_LIMIT = 500;
+    final int MAX_LIMIT = 20;
+    final int MIN_VERTICES = 6;
+
     final int MAX_WEIGHT = 20;
 
     Random random = new Random();
 
     // Creating the constructor
-    public RandomConnectedGraphGenerator()
+    public Graph generateRandomConnectedGraphGenerator()
     {
         graph = new Graph();
-        this.graph.vertices = random.nextInt(MAX_LIMIT) + 1;
+        this.graph.vertices = random.nextInt(MAX_LIMIT-MIN_VERTICES) + MIN_VERTICES;
         System.out.println("Number of vertices: "+ graph.vertices);
-
         int maxEdges = graph.vertices+8;
-        this.graph.edges = random.nextInt(maxEdges - graph.vertices + 1) + graph.vertices;
+        this.graph.edges = random.nextInt(maxEdges - graph.vertices-1) + graph.vertices-1;
         System.out.println("Number of edges: "+ graph.edges);
 
         // Creating an adjacency list
-        // representation for the random graph
         graph.adjacencyList = new ArrayList<>(graph.vertices);
         for (int i = 0; i < graph.vertices; i++)
             graph.adjacencyList.add(new ArrayList<>());
 
-        for(int i= 0; i<graph.vertices; i++){
-            //to make sure graph is connected
-            int w = random.nextInt(graph.vertices);
+        //to keep track of added vertices
+        Set<Integer> graphVerticesSet = new HashSet<>();
+        List<Integer> graphVerticesList = null;
 
-            // Check if there is already an edge between v
-            // and w
-            if ((i == w) || graph.adjacencyList.get(i).contains(new Edge(i,w)) ||
-                    graph.adjacencyList.get(w).contains(new Edge(w,i))) {
-                // Reduce the value of i
-                // so that again v and w can be chosen
-                // for the same edge count
-                i = i - 1;
-                continue;
+        graphVerticesSet.add(0);
+        int edgesAdded=0;
+        for(int i= 0; i<graph.vertices; i++){
+            int w=-1;
+            //to make sure graph is connected select from previous set of nodes
+            if(i==0){
+                w = random.nextInt(graph.vertices);
+                graphVerticesSet.add(w);
+
+            }else {
+                graphVerticesList = new ArrayList<>(graphVerticesSet);
+                int item = random.nextInt(graphVerticesList.size());
+                w = graphVerticesList.get(item);
+
+                // Check if there is already an edge between v and w
+                if ((i == w) || graph.adjacencyList.get(i).contains(new Edge(i, w)) ||
+                        graph.adjacencyList.get(w).contains(new Edge(w, i))) {
+                    continue;
+                }
+                graphVerticesSet.add(i);
             }
             int weight = random.nextInt(MAX_WEIGHT) + 1;
             graph.addEdge(i, w, weight);
+            edgesAdded++;
         }
 
-        int diff = graph.edges-graph.vertices;
+        int diff = graph.edges-edgesAdded;
         // A for loop to randomly generate edges
         for (int i = 0; i < diff; i++) {
             // Randomly select two vertices to
@@ -72,6 +83,8 @@ public class RandomConnectedGraphGenerator {
             int weight = random.nextInt(MAX_WEIGHT) + 1;
             graph.addEdge(v, w, weight);
         }
+        return graph;
+
     }
 
     public void printRandomGraph(){
@@ -81,8 +94,12 @@ public class RandomConnectedGraphGenerator {
 
     public static void main(String[] args) {
         RandomConnectedGraphGenerator randomGraphGenerator = new RandomConnectedGraphGenerator();
-        randomGraphGenerator.printRandomGraph();
+        randomGraphGenerator.generateRandomConnectedGraphGenerator().printGraph();
         System.out.println(randomGraphGenerator.getGraph().isConnected());
+        for (int i=0; i<10; i++){
+            System.out.println(randomGraphGenerator.generateRandomConnectedGraphGenerator().isConnected());
+        }
+
 
         Graph graph2 = new Graph(7,6);
         graph2.addEdge(0,1, 10);
@@ -95,7 +112,6 @@ public class RandomConnectedGraphGenerator {
         graph2.addEdge(5,3, 27);
         graph2.printGraph();
         System.out.println(graph2.isConnected());
-
         graph2.removeEdge(1,4);
         graph2.removeEdge(5,3);
         graph2.printGraph();
