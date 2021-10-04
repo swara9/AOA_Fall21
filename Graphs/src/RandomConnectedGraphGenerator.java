@@ -69,7 +69,7 @@ public class RandomConnectedGraphGenerator {
 
             // Check if there is already an edge between v
             // and w
-            if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(i,w))) {
+            if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(v,w))) {
                 i = i - 1;
                 continue;
             }
