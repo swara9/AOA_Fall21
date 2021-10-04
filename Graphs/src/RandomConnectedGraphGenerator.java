@@ -16,7 +16,7 @@ public class RandomConnectedGraphGenerator {
     Random random = new Random();
 
     // Creating the constructor
-    public Graph generateRandomConnectedGraphGenerator()
+    public Graph generateRandomConnectedGraph()
     {
         graph = new Graph();
         this.graph.vertices = random.nextInt(MAX_LIMIT-MIN_VERTICES) + MIN_VERTICES;
@@ -49,8 +49,7 @@ public class RandomConnectedGraphGenerator {
                 w = graphVerticesList.get(item);
 
                 // Check if there is already an edge between v and w
-                if ((i == w) || graph.adjacencyList.get(i).contains(new Edge(i, w)) ||
-                        graph.adjacencyList.get(w).contains(new Edge(w, i))) {
+                if ((i == w) || graph.adjacencyList.get(i).contains(new Edge(i, w))) {
                     continue;
                 }
                 graphVerticesSet.add(i);
@@ -70,10 +69,7 @@ public class RandomConnectedGraphGenerator {
 
             // Check if there is already an edge between v
             // and w
-            if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(i,w))|| graph.adjacencyList.get(w).contains(new Edge(w,i))) {
-                // Reduce the value of i
-                // so that again v and w can be chosen
-                // for the same edge count
+            if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(i,w))) {
                 i = i - 1;
                 continue;
             }
@@ -94,10 +90,10 @@ public class RandomConnectedGraphGenerator {
 
     public static void main(String[] args) {
         RandomConnectedGraphGenerator randomGraphGenerator = new RandomConnectedGraphGenerator();
-        randomGraphGenerator.generateRandomConnectedGraphGenerator().printGraph();
+        randomGraphGenerator.generateRandomConnectedGraph().printGraph();
         System.out.println(randomGraphGenerator.getGraph().isConnected());
         for (int i=0; i<10; i++){
-            System.out.println(randomGraphGenerator.generateRandomConnectedGraphGenerator().isConnected());
+            System.out.println(randomGraphGenerator.generateRandomConnectedGraph().isConnected());
         }
 
 

@@ -4,14 +4,11 @@ public class Graph {
     public int vertices;
     public int edges;
     public List<List<Edge>> adjacencyList;
-    public List<Edge> allEdges;
-
 
     public Graph(){
         vertices = 0;
         edges = 0;
         adjacencyList = new ArrayList();
-        allEdges = new ArrayList<>();
     }
 
     public Graph(int vertices, int edges){
@@ -21,13 +18,11 @@ public class Graph {
         for(int i =0; i< vertices; i++){
             adjacencyList.add(new ArrayList<>());
         }
-        allEdges = new ArrayList<>();
     }
 
     // Method to add edges between given vertices
     public void addEdge(int v, int w, int weight)
     {
-        allEdges.add(new Edge(v,w,weight));
         // Add w to v's adjacency list
         adjacencyList.get(v).add(new Edge(v, w, weight));
         adjacencyList.get(w).add(new Edge(w, v, weight));
@@ -85,14 +80,4 @@ public class Graph {
         }
     }
 
-    public void printAllEdges(){
-        System.out.println("\nThe edges in graph :");
-        System.out.print("{");
-        for (int j = 0; j < allEdges.size(); j++) {
-            System.out.print(allEdges.get(j));
-            if (j < allEdges.size() - 1)
-                System.out.print(" , ");
-        }
-        System.out.println("}");
-    }
 }
