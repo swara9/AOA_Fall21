@@ -8,18 +8,13 @@ public class MinimumSpanningTree {
         allEdges = new ArrayList<>();
     }
 
-    private static Graph generateMST(Graph graph) {
-        System.out.println("vertices= "+graph.vertices);
-        System.out.println("edges= "+graph.edges);
+    public static Graph generateMST(Graph graph) {
         CycleDetector cycleDetector = new CycleDetector();
         int noEdgesToRemove = graph.edges-graph.vertices+1;
 
-        System.out.println("Number of edges to remove: "+ noEdgesToRemove);
         for(int i=0; i<noEdgesToRemove; i++){
             cycleDetector.findCycle(graph);
-            cycleDetector.printCycleEdges();
             Edge edgeToRemove = cycleDetector.getHighestWeightedEdgeInCycle();
-            System.out.println(cycleDetector.getHighestWeightedEdgeInCycle().toString());
             graph.removeEdge(edgeToRemove.node1, edgeToRemove.node2);
         }
 

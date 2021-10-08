@@ -18,11 +18,11 @@ public class RandomGraphGenerator {
     public Graph generateRandomGraph() {
         graph = new Graph();
         this.graph.vertices = random.nextInt(MAX_LIMIT - 1) + 1;
-        System.out.println("Number of vertices: " + graph.vertices);
         int maxEdges = (graph.vertices * (graph.vertices - 1) / 2);
-
-        this.graph.edges = random.nextInt(maxEdges - graph.vertices - 1) + graph.vertices - 1;
-        System.out.println("Number of edges: " + graph.edges);
+        if(maxEdges!=0)
+            this.graph.edges = random.nextInt(maxEdges);
+        else
+            this.graph.edges = 0;
 
         // Creating an adjacency list
         graph.adjacencyList = new ArrayList<>(graph.vertices);
@@ -31,20 +31,17 @@ public class RandomGraphGenerator {
 
         // A for loop to randomly generate edges
         for (int i = 0; i < graph.edges; i++) {
-            // Randomly select two vertices to
-            // create an edge between them
+            // Randomly select two vertices to create an edge between them
             int v = random.nextInt(graph.vertices);
             int w = random.nextInt(graph.vertices);
 
-            // Check if there is already an edge between v
-            // and w
-            if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(i, w)) || graph.adjacencyList.get(w).contains(new Edge(w, i))) {
+            // Check if there is already an edge between v and w
+            if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(v, w))) {
                 i = i - 1;
                 continue;
             }
 
-            // Add an edge between them if
-            // not previously created
+            // Add an edge between them if not previously created
             int weight = random.nextInt(MAX_WEIGHT) + 1;
             graph.addEdge(v, w, weight);
         }

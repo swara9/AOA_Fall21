@@ -2,16 +2,24 @@ import java.util.*;
 
 public class RandomConnectedGraphGenerator {
 
+    private int maxVerticesLimit;
     private Graph graph;
+    // Set a maximum limit to the vertices
+    final int MIN_VERTICES = 6;
+    final int MAX_WEIGHT = 20;
+
+    public RandomConnectedGraphGenerator(int maxVerticesLimit) {
+        this.maxVerticesLimit = maxVerticesLimit;
+    }
+
+    // Creating the constructor
+    public RandomConnectedGraphGenerator() {
+        this(100);
+    }
 
     public Graph getGraph() {
         return graph;
     }
-    // Set a maximum limit to the vertices
-    final int MAX_LIMIT = 20;
-    final int MIN_VERTICES = 6;
-
-    final int MAX_WEIGHT = 20;
 
     Random random = new Random();
 
@@ -19,11 +27,13 @@ public class RandomConnectedGraphGenerator {
     public Graph generateRandomConnectedGraph()
     {
         graph = new Graph();
-        this.graph.vertices = random.nextInt(MAX_LIMIT-MIN_VERTICES) + MIN_VERTICES;
-        System.out.println("Number of vertices: "+ graph.vertices);
+
+        this.graph.vertices = random.nextInt(maxVerticesLimit);
+        if(graph.vertices<MIN_VERTICES){
+            graph.vertices = graph.vertices+MIN_VERTICES;
+        }
         int maxEdges = graph.vertices+8;
         this.graph.edges = random.nextInt(maxEdges - graph.vertices-1) + graph.vertices-1;
-        System.out.println("Number of edges: "+ graph.edges);
 
         // Creating an adjacency list
         graph.adjacencyList = new ArrayList<>(graph.vertices);
@@ -62,31 +72,23 @@ public class RandomConnectedGraphGenerator {
         int diff = graph.edges-edgesAdded;
         // A for loop to randomly generate edges
         for (int i = 0; i < diff; i++) {
-            // Randomly select two vertices to
-            // create an edge between them
+            // Randomly select two vertices to create an edge between them
             int v = random.nextInt(graph.vertices);
             int w = random.nextInt(graph.vertices);
 
-            // Check if there is already an edge between v
-            // and w
+            // Check if there is already an edge between v and w
             if ((v == w) || graph.adjacencyList.get(v).contains(new Edge(v,w))) {
                 i = i - 1;
                 continue;
             }
 
-            // Add an edge between them if
-            // not previously created
+            // Add an edge between them if not previously created
             int weight = random.nextInt(MAX_WEIGHT) + 1;
             graph.addEdge(v, w, weight);
         }
         return graph;
 
     }
-
-    public void printRandomGraph(){
-        graph.printGraph();
-    }
-
 
     public static void main(String[] args) {
         RandomConnectedGraphGenerator randomGraphGenerator = new RandomConnectedGraphGenerator();
