@@ -9,7 +9,7 @@ public class RandomGraphGenerator {
     }
 
     // Set a maximum limit to the vertices
-    final int MAX_LIMIT = 20;
+    final int MAX_LIMIT = 5000;
     final int MAX_WEIGHT = 20;
 
     Random random = new Random();

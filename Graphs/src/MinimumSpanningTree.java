@@ -21,6 +21,11 @@ public class MinimumSpanningTree {
         return graph;
     }
 
+    public static boolean isSpanningTree(Graph graph){
+        CycleDetector cycleDetector = new CycleDetector();
+        return (cycleDetector.findCycle(graph).isEmpty() && graph.isConnected());
+    }
+
     public static void main(String[] args) {
 //        Graph graph = new Graph(9,14);
 //        graph.addEdge(0,1, 4);
@@ -49,6 +54,7 @@ public class MinimumSpanningTree {
         randomGraph.generateRandomConnectedGraph().printGraph();
         Graph MST2 = MinimumSpanningTree.generateMST(randomGraph.getGraph());
         System.out.println("\nMinimum Spanning Tree: ");
+        System.out.println(isSpanningTree(MST2));
         MST2.printGraph();
     }
 }

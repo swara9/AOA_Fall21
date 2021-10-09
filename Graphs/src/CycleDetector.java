@@ -58,10 +58,10 @@ public class CycleDetector {
         return false;
     }
 
-    public boolean findCycle(Graph graph){
+    public List<Integer> findCycle(Graph graph){
+        cycle = new ArrayList<>();
         if(checkCycle(graph)){
             cycleEdges = new ArrayList<>();
-            cycle = new ArrayList<>();
             int index = cycleVertices.indexOf(cycleAt);
             int edgeIndex = -1;
             for(int i = index; i< cycleVertices.size(); i++){
@@ -76,9 +76,8 @@ public class CycleDetector {
                     cycleEdges.add(graph.adjacencyList.get(cycleVertices.get(i)).get(edgeIndex));
                 }
             }
-            return true;
         }
-        return false;
+        return cycle;
     }
 
     public List<Edge> getCycleEdges(){
@@ -165,19 +164,20 @@ public class CycleDetector {
         Instant start;
         Instant end;
         Duration timeLapsed;
-        for(int i=0; i<15; i++){
+        for(int i=0; i<20; i++){
             Graph g = randomGraphGenerator.generateRandomGraph();
+//            System.out.println("vertices "+g.vertices+", edges "+g.edges);
             start = Instant.now();
             System.out.println();
-            if(cycleDetector.findCycle(g)){
-                cycleDetector.printCycle();
+            if(!cycleDetector.findCycle(g).isEmpty()){
+//                cycleDetector.printCycle();
             }else{
-                System.out.print(" No Cycle found!");
+//                System.out.print(" No Cycle found!");
             }
 
             end = Instant.now();
             timeLapsed = Duration.between(start,end);
-            System.out.println("\n"+g.vertices+", "+ timeLapsed.toNanos());
+            System.out.println(g.vertices+", "+ timeLapsed.toNanos());
         }
 
 
