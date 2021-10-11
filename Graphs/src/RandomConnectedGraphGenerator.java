@@ -99,8 +99,6 @@ public class RandomConnectedGraphGenerator {
 //        for (int i=0; i<10; i++){
 //            System.out.println(randomGraphGenerator.generateRandomConnectedGraph().isConnected());
 //        }
-
-
         Graph graph2 = new Graph(7,6);
         graph2.addEdge(0,1, 10);
         graph2.addEdge(0,2,12);
