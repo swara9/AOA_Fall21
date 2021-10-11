@@ -3,7 +3,7 @@ import java.util.*;
 public class RandomGraphGenerator {
 
     // Set a maximum limit to the vertices
-    final int MAX_LIMIT = 500000;
+    final int MAX_LIMIT = 2000000;
     final int MAX_WEIGHT = 20;
     Random random = new Random();
     private Graph graph;

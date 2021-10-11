@@ -20,7 +20,7 @@ public class RandomConnectedGraphGenerator {
         }
         int maxEdges = vertices+8;
         int edges = random.nextInt(maxEdges - vertices-1) + vertices-1;
-        graph = new Graph(vertices, maxEdges);
+        graph = new Graph(vertices, edges);
 
         //to keep track of added vertices
         Set<Integer> graphVerticesSet = new HashSet<>();

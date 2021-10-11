@@ -97,7 +97,7 @@ public class CycleDetector {
     }
 
     public static void main(String[] args) {
-        for (int i = 10; i <= 5000; i += 10) {
+        for (int i = 10; i <= 10000; i += 100) {
             RandomGraphGenerator randomGraphGenerator = new RandomGraphGenerator();
             Graph graph = randomGraphGenerator.getRandomGraph(i);
             long start = System.nanoTime();
