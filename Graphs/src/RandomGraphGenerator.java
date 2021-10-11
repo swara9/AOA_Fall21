@@ -17,8 +17,8 @@ public class RandomGraphGenerator {
     // Creating the constructor
     public Graph generateRandomGraph(int vertices) {
         graph = new Graph();
-//        this.graph.vertices = random.nextInt(MAX_LIMIT - 1) + 1;
         this.graph.vertices = vertices;
+//        this.graph.vertices = random.nextInt(MAX_LIMIT - 1) + 1;
 
         int maxEdges = (graph.vertices * (graph.vertices - 1) / 2);
         if(maxEdges!=0)
@@ -48,36 +48,5 @@ public class RandomGraphGenerator {
             graph.addEdge(v, w, weight);
         }
         return graph;
-
-    }
-
-    public void printRandomGraph() {
-        graph.printGraph();
-    }
-
-
-    public static void main(String[] args) {
-//        RandomGraphGenerator randomGraphGenerator = new RandomGraphGenerator();
-//        randomGraphGenerator.generateRandomGraph().printGraph();
-//        for (int i = 0; i < 10; i++) {
-//            System.out.println(randomGraphGenerator.generateRandomGraph().isConnected());
-//        }
-
-
-        Graph graph2 = new Graph(7, 6);
-        graph2.addEdge(0, 1, 10);
-        graph2.addEdge(0, 2, 12);
-        graph2.addEdge(1, 4, 5);
-        graph2.addEdge(1, 6, 6);
-        graph2.addEdge(5, 4, 55);
-        graph2.addEdge(6, 5, 52);
-        graph2.addEdge(6, 4, 14);
-        graph2.addEdge(5, 3, 27);
-        graph2.printGraph();
-        System.out.println(graph2.isConnected());
-        graph2.removeEdge(1, 4);
-        graph2.removeEdge(5, 3);
-        graph2.printGraph();
-        System.out.println(graph2.isConnected());
     }
 }

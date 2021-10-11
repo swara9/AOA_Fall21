@@ -93,11 +93,12 @@ public class CycleDetector {
     }
 
     public void printCycle(){
-        System.out.println();
+        System.out.print("Cycle: ");
         for (int v: cycle){
             System.out.print(v+" -> ");
         }
         System.out.print(cycle.get(0));
+        System.out.println();
     }
 
     public Edge getEdgeWithHighestWeight(){
@@ -111,28 +112,85 @@ public class CycleDetector {
         return highest;
     }
 
+    public void detectCycle(Graph graph){
+        graph.printGraph();
+        if(!findCycle(graph).isEmpty()){
+            printCycle();
+        }else{
+            System.out.println("No cycle found!");
+        }
+
+    }
+
+    public void testRunner(){
+        System.out.println("\nCase 1: Connected graph with no cycles");
+        Graph g1 = new Graph(5, 4);
+        g1.addEdge(0,1);
+        g1.addEdge(1,4);
+        g1.addEdge(2,1);
+        g1.addEdge(2,3);
+        detectCycle(g1);
+
+        System.out.println("\nCase 2: Connected graph with multiple cycles");
+        Graph g2 = new Graph(6,7);
+        g2.addEdge(0,1);
+        g2.addEdge(2,1);
+        g2.addEdge(0,2);
+        g2.addEdge(1,3);
+        g2.addEdge(3,4);
+        g2.addEdge(4,5);
+        g2.addEdge(3,5);
+        detectCycle(g2);
+
+        System.out.println("\nCase 3: Disconnected graph with no cycles");
+        Graph g3 = new Graph(5, 3);
+        g3.addEdge(0,1);
+        g3.addEdge(2,3);
+        g3.addEdge(3,4);
+        detectCycle(g3);
+
+        System.out.println("\nCase 4: Disconnected graph with cycle in first part");
+        Graph g4 = new Graph(6,5);
+        g4.addEdge(0,1);
+        g4.addEdge(1,2);
+        g4.addEdge(2,3);
+        g4.addEdge(3,0);
+        g4.addEdge(4,5);
+        detectCycle(g4);
+
+        System.out.println("\nCase 5: Disconnected graph with cycle not in first part");
+        Graph g5 = new Graph(8, 7);
+        g5.addEdge(0,1);
+        g5.addEdge(1,2);
+        g5.addEdge(3,4);
+        g5.addEdge(4,5);
+        g5.addEdge(5,6);
+        g5.addEdge(6,7);
+        g5.addEdge(7,4);
+        detectCycle(g5);
+    }
 
     public static void main(String[] args) {
         CycleDetector cycleDetector = new CycleDetector();
+        cycleDetector.testRunner();
 
-
-        RandomGraphGenerator randomGraphGenerator = new RandomGraphGenerator();
-        long start;
-        long end;
-        long timeLapsed;
-        Graph g;
-
-
-        for(int i=10; i<=50000; i+=1000){
-
-                g = randomGraphGenerator.generateRandomGraph(i);
-                start = System.nanoTime();
-                cycleDetector.checkCycle(g);
-                end = System.nanoTime();
-                timeLapsed = end-start;
-                System.out.println(g.vertices+", "+g.edges+", "+(g.vertices+g.edges)+", "+ timeLapsed);
-
-        }
+//        RandomGraphGenerator randomGraphGenerator = new RandomGraphGenerator();
+//        long start;
+//        long end;
+//        long timeLapsed;
+//        Graph g;
+//
+//
+//        for(int i=10; i<=50000; i+=1000){
+//
+//                g = randomGraphGenerator.generateRandomGraph(i);
+//                start = System.nanoTime();
+//                cycleDetector.checkCycle(g);
+//                end = System.nanoTime();
+//                timeLapsed = end-start;
+//                System.out.println(g.vertices+", "+g.edges+", "+(g.vertices+g.edges)+", "+ timeLapsed);
+//
+//        }
     }
 }
 

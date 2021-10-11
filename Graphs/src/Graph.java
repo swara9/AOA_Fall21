@@ -28,6 +28,13 @@ public class Graph {
         adjacencyList.get(w).add(new Edge(w, v, weight));
     }
 
+    public void addEdge(int v, int w)
+    {
+        // Add w to v's adjacency list
+        adjacencyList.get(v).add(new Edge(v, w, -1));
+        adjacencyList.get(w).add(new Edge(w, v, -1));
+    }
+
     public void removeEdge(int v, int w){
         adjacencyList.get(v).remove(new Edge(v,w));
         adjacencyList.get(w).remove(new Edge(w,v));

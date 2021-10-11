@@ -89,32 +89,5 @@ public class RandomConnectedGraphGenerator {
             graph.addEdge(v, w, weight);
         }
         return graph;
-
-    }
-
-    public static void main(String[] args) {
-//        RandomConnectedGraphGenerator randomGraphGenerator = new RandomConnectedGraphGenerator();
-//        randomGraphGenerator.generateRandomConnectedGraph().printGraph();
-//        System.out.println(randomGraphGenerator.getGraph().isConnected());
-//        for (int i=0; i<10; i++){
-//            System.out.println(randomGraphGenerator.generateRandomConnectedGraph().isConnected());
-//        }
-
-
-        Graph graph2 = new Graph(7,6);
-        graph2.addEdge(0,1, 10);
-        graph2.addEdge(0,2,12);
-        graph2.addEdge(1,4, 5);
-        graph2.addEdge(1,6,6);
-        graph2.addEdge(5,4,55);
-        graph2.addEdge(6,5,52);
-        graph2.addEdge(6,4, 14);
-        graph2.addEdge(5,3, 27);
-        graph2.printGraph();
-        System.out.println(graph2.isConnected());
-        graph2.removeEdge(1,4);
-        graph2.removeEdge(5,3);
-        graph2.printGraph();
-        System.out.println(graph2.isConnected());
     }
 }
