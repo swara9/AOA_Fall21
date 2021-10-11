@@ -24,11 +24,13 @@ public class RandomConnectedGraphGenerator {
     Random random = new Random();
 
     // Creating the constructor
-    public Graph generateRandomConnectedGraph()
+    public Graph generateRandomConnectedGraph(int vertices)
     {
         graph = new Graph();
 
-        this.graph.vertices = random.nextInt(maxVerticesLimit);
+        //Remove this
+//        this.graph.vertices = random.nextInt(maxVerticesLimit);
+        this.graph.vertices = vertices;
         if(graph.vertices<MIN_VERTICES){
             graph.vertices = graph.vertices+MIN_VERTICES;
         }
@@ -91,12 +93,12 @@ public class RandomConnectedGraphGenerator {
     }
 
     public static void main(String[] args) {
-        RandomConnectedGraphGenerator randomGraphGenerator = new RandomConnectedGraphGenerator();
-        randomGraphGenerator.generateRandomConnectedGraph().printGraph();
-        System.out.println(randomGraphGenerator.getGraph().isConnected());
-        for (int i=0; i<10; i++){
-            System.out.println(randomGraphGenerator.generateRandomConnectedGraph().isConnected());
-        }
+//        RandomConnectedGraphGenerator randomGraphGenerator = new RandomConnectedGraphGenerator();
+//        randomGraphGenerator.generateRandomConnectedGraph().printGraph();
+//        System.out.println(randomGraphGenerator.getGraph().isConnected());
+//        for (int i=0; i<10; i++){
+//            System.out.println(randomGraphGenerator.generateRandomConnectedGraph().isConnected());
+//        }
 
 
         Graph graph2 = new Graph(7,6);

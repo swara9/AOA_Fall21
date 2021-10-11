@@ -15,9 +15,11 @@ public class RandomGraphGenerator {
     Random random = new Random();
 
     // Creating the constructor
-    public Graph generateRandomGraph() {
+    public Graph generateRandomGraph(int vertices) {
         graph = new Graph();
-        this.graph.vertices = random.nextInt(MAX_LIMIT - 1) + 1;
+//        this.graph.vertices = random.nextInt(MAX_LIMIT - 1) + 1;
+        this.graph.vertices = vertices;
+
         int maxEdges = (graph.vertices * (graph.vertices - 1) / 2);
         if(maxEdges!=0)
             this.graph.edges = random.nextInt(maxEdges);
@@ -55,11 +57,11 @@ public class RandomGraphGenerator {
 
 
     public static void main(String[] args) {
-        RandomGraphGenerator randomGraphGenerator = new RandomGraphGenerator();
-        randomGraphGenerator.generateRandomGraph().printGraph();
-        for (int i = 0; i < 10; i++) {
-            System.out.println(randomGraphGenerator.generateRandomGraph().isConnected());
-        }
+//        RandomGraphGenerator randomGraphGenerator = new RandomGraphGenerator();
+//        randomGraphGenerator.generateRandomGraph().printGraph();
+//        for (int i = 0; i < 10; i++) {
+//            System.out.println(randomGraphGenerator.generateRandomGraph().isConnected());
+//        }
 
 
         Graph graph2 = new Graph(7, 6);
