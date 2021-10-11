@@ -76,14 +76,6 @@ public class CycleDetector {
         return cycleEdges;
     }
 
-    public void printCycleEdges() {
-        System.out.print("\n{");
-        for (Edge edge : cycleEdges) {
-            System.out.print(edge.toString());
-        }
-        System.out.print("}\n");
-    }
-
     public void printCycle() {
         System.out.print("Cycle: ");
         for (int v : cycle) {
@@ -97,7 +89,7 @@ public class CycleDetector {
         Edge highest = getCycleEdges().get(0);
         EdgeComparator comparator = new EdgeComparator();
         for (Edge edge : getCycleEdges()) {
-            if (comparator.compare(edge, highest) == 1) {
+            if (comparator.compare(edge, highest) == -1) {
                 highest = edge;
             }
         }
