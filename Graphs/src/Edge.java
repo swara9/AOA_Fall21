@@ -24,14 +24,6 @@ public class Edge {
         this.weight = -1;
     }
 
-    public int getWeight() {
-        return weight;
-    }
-
-    public void setWeight(int weight) {
-        this.weight = weight;
-    }
-
     @Override
     public String toString() {
         return "(" + node1 +", " + node2 +", "+weight+")";
@@ -41,9 +33,7 @@ public class Edge {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Edge edge = (Edge) o;
-
         if (node1 != edge.node1) return false;
         return node2 == edge.node2;
     }
@@ -54,5 +44,4 @@ public class Edge {
         result = 31 * result + node2;
         return result;
     }
-
 }

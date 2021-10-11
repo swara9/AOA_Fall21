@@ -5,38 +5,42 @@ public class Graph {
     public int edges;
     public List<List<Edge>> adjacencyList;
 
-    public Graph(){
+    public Graph() {
         vertices = 0;
         edges = 0;
-        adjacencyList = new ArrayList();
+        adjacencyList = new ArrayList<>();
     }
 
-    public Graph(int vertices, int edges){
+    public Graph(int vertices, int edges) {
         this.vertices = vertices;
         this.edges = edges;
-        adjacencyList = new ArrayList();
-        for(int i =0; i< vertices; i++){
-            adjacencyList.add(new ArrayList<>());
+        adjacencyList = new ArrayList<>(vertices);
+        for (int i = 0; i < vertices; i++) {
+            adjacencyList.add(new LinkedList<>());
         }
     }
 
     // Method to add edges between given vertices
-    public void addEdge(int v, int w, int weight)
-    {
+    public void addEdge(int v, int w, int weight) {
         // Add w to v's adjacency list
         adjacencyList.get(v).add(new Edge(v, w, weight));
         adjacencyList.get(w).add(new Edge(w, v, weight));
     }
 
-    public void removeEdge(int v, int w){
-        adjacencyList.get(v).remove(new Edge(v,w));
-        adjacencyList.get(w).remove(new Edge(w,v));
+    public void addEdge(int v, int w) {
+        // Add w to v's adjacency list
+        adjacencyList.get(v).add(new Edge(v, w, -1));
+        adjacencyList.get(w).add(new Edge(w, v, -1));
     }
 
+    public void removeEdge(int v, int w) {
+        adjacencyList.get(v).remove(new Edge(v, w));
+        adjacencyList.get(w).remove(new Edge(w, v));
+    }
 
-    public boolean isConnected(){
+    public boolean isConnected() {
         boolean[] visited = new boolean[vertices];
-        for (int i=0; i<vertices; i++){
+        for (int i = 0; i < vertices; i++) {
             visited[i] = false;
         }
         Stack<Integer> stack = new Stack<>();
@@ -54,23 +58,19 @@ public class Graph {
                 }
             }
         }
-        return visistedVertices==vertices;
+        return visistedVertices == vertices;
     }
 
     public void printGraph() {
-        // Print the graph
         System.out.println();
         for (int i = 0; i < adjacencyList.size(); i++) {
             System.out.print(i + " -> { ");
-
             List<Edge> list = adjacencyList.get(i);
-
             if (list.isEmpty())
                 System.out.print(" No adjacent vertices ");
             else {
                 int size = list.size();
                 for (int j = 0; j < size; j++) {
-
                     System.out.print(list.get(j).toString());
                     if (j < size - 1)
                         System.out.print(" , ");
@@ -79,5 +79,4 @@ public class Graph {
             System.out.println("}");
         }
     }
-
 }
