@@ -20,6 +20,7 @@ class Point{
 public class SegmentedLeastSquares {
 
     float[][] sseMatrix;
+    float[] M;
 
     private float computeSSE(int start, int end, List<Point> p){
             float sse = 0;
@@ -61,34 +62,32 @@ public class SegmentedLeastSquares {
     }
 
     public float[] getOptimumError(int n, float c){
-        float[] M = new float[n];
+        M = new float[n+1];
         List<Float> previousErrors;
-
-        for (int j = 0; j < n; j++) {
+        M[0] = 0;
+        for (int j = 1; j <= n; j++) {
             previousErrors = new ArrayList<Float>();
             //get all previous errors
-            for(int i = 0; i<=j; i++){
-                if(i==0){
-                    previousErrors.add(sseMatrix[i][j]+c);
+            for(int i = 1; i<=j; i++){
+                if(i==1){
+                    previousErrors.add(sseMatrix[i-1][j-1]+c);
                 }else{
-                    previousErrors.add(sseMatrix[i][j]+ c + M[i-1]);
+                    previousErrors.add(sseMatrix[i-1][j-1]+ c + M[i-1]);
                 }
             }
-//            System.out.println(previousErrors.size());
-            if(j==0){
-                M[j] = c;
-            }else{
-                M[j] = Collections.min(previousErrors);
-            }
-
+            M[j] = Collections.min(previousErrors);
         }
 
         System.out.println("\nError matrix: ");
-        for (int i=0; i<n; i++){
+        for (int i=0; i<n+1; i++){
             System.out.print(M[i] +"\t");
         }
 
         return M;
+    }
+
+    public void traceback(int n){
+
     }
 
     public static void main(String[] args) {
@@ -104,10 +103,6 @@ public class SegmentedLeastSquares {
         points.add(new Point(7,7));
         points.add(new Point(8,8));
         points.add(new Point(9,9));
-//        for (Point p: points
-//             ) {
-//            System.out.println(p.toString());
-//        }
         segmentedLeastSquares.computeSseMatrix(points);
         segmentedLeastSquares.getOptimumError(points.size(), 10);
     }
