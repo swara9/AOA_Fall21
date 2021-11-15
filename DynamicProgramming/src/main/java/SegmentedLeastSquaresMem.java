@@ -10,11 +10,15 @@ public class SegmentedLeastSquaresMem {
     float[] sumArray;
     float[] squareSumArray;
 
+
     public void initErrorArrays(List<Point> points){
         int n = points.size();
         sumArray = new float[n];
         squareSumArray = new float[n];
-
+        M = new float[n+1];
+        for (int i = 0; i <n+1 ; i++) {
+            M[i] = -1;
+        }
         for (int i = 0; i < n; i++) {
             float y = points.get(i).y;
             if(i==0){
@@ -65,35 +69,27 @@ public class SegmentedLeastSquaresMem {
         }
     }
 
-    public float[] getOptimumError(int n, float c){
-        M = new float[n+1];
+    public float computeOpt(int j, float c){
         List<Float> previousErrors;
-        M[0] = 0;
-        for (int j = 1; j <= n; j++) {
-            previousErrors = new ArrayList<Float>();
-            //get all previous errors
-            for(int i = 1; i<=j; i++){
-                if(i==1){
-                    previousErrors.add(sseMatrix[i-1][j-1]+c);
-                }else{
-                    previousErrors.add(sseMatrix[i-1][j-1]+ c + M[i-1]);
-                }
+        if(j == 0){
+            return 0;
+        }
+        if(M[j]!=-1){
+            return M[j];
+        }
+        previousErrors = new ArrayList<Float>();
+        for (int i = 1; i <=j ; i++) {
+            if(i==1){
+                previousErrors.add(sseMatrix[i-1][j-1]+c);
+            } else {
+                previousErrors.add(sseMatrix[i-1][j-1]+c+ computeOpt(i-1, c));
             }
-            M[j] = Collections.min(previousErrors);
         }
-
-        System.out.println("\nError matrix: ");
-        for (int i=0; i<n+1; i++){
-            System.out.print(M[i] +"\t");
-        }
-
-        return M;
+        M[j] = Collections.min(previousErrors);
+        return M[j];
     }
 
     public void findSegment(List<Point> points, int c){
-//        if(j==0){
-//            return;
-//        } else {
         int j = (points.size());
         while(j>0){
 
@@ -114,7 +110,7 @@ public class SegmentedLeastSquaresMem {
     }
 
     public static void main(String[] args) {
-        SegmentedLeastSquares segmentedLeastSquares = new SegmentedLeastSquares();
+        SegmentedLeastSquaresMem segmentedLeastSquares = new SegmentedLeastSquaresMem();
         List<Point> points = new ArrayList<Point>();
         points.add(new Point(0,0));
         points.add(new Point(1,1));
@@ -128,7 +124,11 @@ public class SegmentedLeastSquaresMem {
         points.add(new Point(9,9));
         segmentedLeastSquares.initErrorArrays(points);
         segmentedLeastSquares.computeSseMatrix(points);
-        segmentedLeastSquares.getOptimumError(points.size(), 10);
+        segmentedLeastSquares.computeOpt(points.size(), 10);
+
+        for (int i=0; i<points.size()+1; i++){
+            System.out.print(segmentedLeastSquares.M[i] +"\t");
+        }
         segmentedLeastSquares.findSegment(points, 10);
     }
 

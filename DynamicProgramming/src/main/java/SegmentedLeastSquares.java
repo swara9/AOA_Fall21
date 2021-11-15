@@ -64,7 +64,7 @@ public class SegmentedLeastSquares {
         }
     }
 
-    public float[] getOptimumError(int n, float c){
+    public void getOptimumError(int n, float c){
         M = new float[n+1];
         List<Float> previousErrors;
         M[0] = 0;
@@ -85,8 +85,6 @@ public class SegmentedLeastSquares {
         for (int i=0; i<n+1; i++){
             System.out.print(M[i] +"\t");
         }
-
-        return M;
     }
 
     public void findSegment(List<Point> points, int c){
