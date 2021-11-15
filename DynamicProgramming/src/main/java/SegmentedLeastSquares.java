@@ -66,19 +66,24 @@ public class SegmentedLeastSquares {
 
     public void getOptimumError(int n, float c){
         M = new float[n+1];
-        List<Float> previousErrors;
         M[0] = 0;
+        float min;
+        float error;
         for (int j = 1; j <= n; j++) {
-            previousErrors = new ArrayList<Float>();
+            min = Float.MAX_VALUE;
+
             //get all previous errors
             for(int i = 1; i<=j; i++){
                 if(i==1){
-                    previousErrors.add(sseMatrix[i-1][j-1]+c);
+                    error = sseMatrix[i-1][j-1]+c;
                 }else{
-                    previousErrors.add(sseMatrix[i-1][j-1]+ c + M[i-1]);
+                    error = sseMatrix[i-1][j-1]+ c + M[i-1];
+                }
+                if(error<min){
+                    min = error;
                 }
             }
-            M[j] = Collections.min(previousErrors);
+            M[j] = min;
         }
 
         System.out.println("\nError matrix: ");
