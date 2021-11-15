@@ -86,8 +86,27 @@ public class SegmentedLeastSquares {
         return M;
     }
 
-    public void traceback(int n){
+    public void findSegment(List<Point> points, int c){
+//        if(j==0){
+//            return;
+//        } else {
+        int j = (points.size());
+        while(j>0){
 
+            //list of all previous costs
+            List<Float> segCosts = new ArrayList<Float>();
+
+            for(int i=1; i<=j; i++){
+                segCosts.add(sseMatrix[i-1][j-1]+c+M[i-1]);
+            }
+            //find min in list as i and output that segment
+            float  min = Collections.min(segCosts);
+            int index = segCosts.indexOf(min);
+            //print segment
+            System.out.println("["+points.get(index).x+"-"+points.get(j-1).x+"]");
+            //set j to i-1
+            j = index;
+        }
     }
 
     public static void main(String[] args) {
@@ -105,6 +124,7 @@ public class SegmentedLeastSquares {
         points.add(new Point(9,9));
         segmentedLeastSquares.computeSseMatrix(points);
         segmentedLeastSquares.getOptimumError(points.size(), 10);
+        segmentedLeastSquares.findSegment(points, 10);
     }
 
 }
