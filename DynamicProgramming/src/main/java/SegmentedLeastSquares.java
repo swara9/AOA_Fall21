@@ -93,12 +93,8 @@ public class SegmentedLeastSquares {
     }
 
     public void findSegment(List<Point> points, int c){
-//        if(j==0){
-//            return;
-//        } else {
         int j = (points.size());
         while(j>0){
-
             //list of all previous costs
             List<Float> segCosts = new ArrayList<Float>();
 

@@ -1,6 +1,8 @@
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 
 public class SegmentedLeastSquaresMem {
@@ -9,16 +11,28 @@ public class SegmentedLeastSquaresMem {
     float[] M;
     float[] sumArray;
     float[] squareSumArray;
+    List<Point> points;
+    float c;
 
 
-    public void initErrorArrays(List<Point> points){
+    public SegmentedLeastSquaresMem(int penalty, List<Point> points){
+        c = penalty;
+        this.points = points;
+    }
+
+    public void initErrorArrays(){
         int n = points.size();
         sumArray = new float[n];
-        squareSumArray = new float[n];
+        squareSumArray = new float[n]
+        ;
+        //Initializing opt array
         M = new float[n+1];
         for (int i = 0; i <n+1 ; i++) {
             M[i] = -1;
         }
+        M[0] = 0;
+
+        //Initializing mean squared error
         for (int i = 0; i < n; i++) {
             float y = points.get(i).y;
             if(i==0){
@@ -29,8 +43,9 @@ public class SegmentedLeastSquaresMem {
                 squareSumArray[i]= squareSumArray[i-1]+ (y*y);
             }
         }
+
     }
-    private float computeSSE(int start, int end, List<Point> p){
+    private float computeSSE(int start, int end){
         float sse = 0;
         int i = 0;
         int n = end - start+1;
@@ -47,7 +62,7 @@ public class SegmentedLeastSquaresMem {
         return sse;
     }
 
-    public void computeSseMatrix(List<Point> points){
+    public void computeSseMatrix(){
         int n = points.size();
         sseMatrix = new float[n][n];
         for(int i=0; i<n; i++){
@@ -57,7 +72,7 @@ public class SegmentedLeastSquaresMem {
         }
         for(int j = 0; j<n; j++){
             for (int i =0; i<j; i++){
-                sseMatrix[i][j] = computeSSE(i, j, points);
+                sseMatrix[i][j] = computeSSE(i, j);
             }
         }
 
@@ -79,23 +94,35 @@ public class SegmentedLeastSquaresMem {
         }
         previousErrors = new ArrayList<Float>();
         for (int i = 1; i <=j ; i++) {
-            if(i==1){
-                previousErrors.add(sseMatrix[i-1][j-1]+c);
-            } else {
-                previousErrors.add(sseMatrix[i-1][j-1]+c+ computeOpt(i-1, c));
-            }
+            previousErrors.add(sseMatrix[i-1][j-1]+c+ computeOpt(i-1, c));
         }
         M[j] = Collections.min(previousErrors);
         return M[j];
     }
 
-    public void findSegment(List<Point> points, int c){
-        int j = (points.size());
+    public float computeOptMap(int j, Map<Integer, Float> partitionMap) {
+        if(j == 0){
+            return 0;
+        }
+        if(partitionMap.containsKey(j)){
+            return  partitionMap.get(j);
+        }
+        List<Float> previousErrors = new ArrayList<Float>();
+        for (int i = 1; i <=j; i++) {
+            previousErrors.add(sseMatrix[i-1][j-1] + c + computeOptMap(i - 1, partitionMap));
+        }
+        //opt[j] = Collections.min(prevErrors);
+        partitionMap.put(j, Collections.min(previousErrors));
+        return partitionMap.get(j);
+    }
+
+
+    public void findSegment(){
+        int j = points.size();
         while(j>0){
 
             //list of all previous costs
             List<Float> segCosts = new ArrayList<Float>();
-
             for(int i=1; i<=j; i++){
                 segCosts.add(sseMatrix[i-1][j-1]+c+M[i-1]);
             }
@@ -109,8 +136,24 @@ public class SegmentedLeastSquaresMem {
         }
     }
 
+    public void findPartitions(Map<Integer, Float> partitionMap) {
+        int j = points.size();
+        while (j > 0) {
+            float minCost = Float.MAX_VALUE;
+            int index = j;
+            for (int i = 1; i <= j; i++) {
+                float currCost = sseMatrix[i-1][j-1] + c + partitionMap.get(i-1);
+                if (minCost > currCost) {
+                    minCost = currCost;
+                    index = i;
+                }
+            }
+            System.out.println("["+points.get(index-1).x+"-"+points.get(j-1).x+"]");
+            j = index -1;
+        }
+    }
+
     public static void main(String[] args) {
-        SegmentedLeastSquaresMem segmentedLeastSquares = new SegmentedLeastSquaresMem();
         List<Point> points = new ArrayList<Point>();
         points.add(new Point(0,0));
         points.add(new Point(1,1));
@@ -122,14 +165,24 @@ public class SegmentedLeastSquaresMem {
         points.add(new Point(7,7));
         points.add(new Point(8,8));
         points.add(new Point(9,9));
-        segmentedLeastSquares.initErrorArrays(points);
-        segmentedLeastSquares.computeSseMatrix(points);
-        segmentedLeastSquares.computeOpt(points.size(), 10);
+        SegmentedLeastSquaresMem segmentedLeastSquares = new SegmentedLeastSquaresMem(10, points);
 
+        segmentedLeastSquares.initErrorArrays();
+        segmentedLeastSquares.computeSseMatrix();
+
+        //without hashmap
+        segmentedLeastSquares.computeOpt(points.size(), 10);
         for (int i=0; i<points.size()+1; i++){
             System.out.print(segmentedLeastSquares.M[i] +"\t");
         }
-        segmentedLeastSquares.findSegment(points, 10);
+        segmentedLeastSquares.findSegment();
+
+        //with hashmap
+        Map<Integer, Float> partitionMap = new HashMap<Integer, Float>();
+        partitionMap.put(0, 0f);
+        segmentedLeastSquares.computeOptMap(points.size(), partitionMap);
+        System.out.println(partitionMap);
+        segmentedLeastSquares.findPartitions(partitionMap);
     }
 
 }
