@@ -41,7 +41,7 @@ public class WeightedCommonSubstring {
     void getLongestCommonSubstring(String s1, String s2) {
         int m = s1.length();
         int n = s2.length();
-        double[][] weightMatrix = new double[m][n];
+        double[][] LCS = new double[m][n];
         double maxWeight = delta;
         int max_i = 0;
         int max_j = 0;
@@ -58,15 +58,15 @@ public class WeightedCommonSubstring {
                     if(s1Char == s2Char){
                         weight = letterFrequency.get(s1Char);
                     }
-                    weightMatrix[i][j] = weight;
+                    LCS[i][j] = weight;
                 }else{
                     if(s1Char == s2Char) {
                         weight = letterFrequency.get(s1Char);
                     }
-                    if(weightMatrix[i-1][j-1]>=0){
-                        weight = weightMatrix[i-1][j-1] + weight;
+                    if(LCS[i-1][j-1]>=0){
+                        weight = LCS[i-1][j-1] + weight;
                     }
-                    weightMatrix[i][j] = weight;
+                    LCS[i][j] = Math.max(weight, delta);
                 }
                 if(maxWeight < weight){
                     maxWeight = weight;
@@ -79,7 +79,7 @@ public class WeightedCommonSubstring {
 
         i = max_i;
         j = max_j;
-        while(weightMatrix[i-1][j-1]>0 && i>=0 && j>=0){
+        while(LCS[i-1][j-1]>0 && i>=0 && j>=0){
             i--;
             j--;
         }
