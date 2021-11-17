@@ -45,7 +45,6 @@ public class ApproximateIntervalPartition {
     }
     private float computeSSE(int start, int end){
         float sse = 0;
-        int i = 0;
         int n = end - start+1;
         float squaredSum =0;
         float sum = 0;
