@@ -56,20 +56,35 @@ public class WeightedCommonSubstring {
                 char s1Char = s1.charAt(i);
                 char s2Char = s2.charAt(j);
                 double weight = delta;
+                if(s1Char == s2Char) {
+                    weight = letterFrequency.get(s1Char);
+                }
                 if (i == 0 || j == 0){
-                    if(s1Char == s2Char){
-                        weight = letterFrequency.get(s1Char);
-                    }
                     LCS[i][j] = weight;
                 }else{
-                    if(s1Char == s2Char) {
-                        weight = letterFrequency.get(s1Char);
-                    }
-                    if(LCS[i-1][j-1]>=0){
-                        weight = LCS[i-1][j-1] + weight;
-                    }
-                    LCS[i][j] = Math.max(weight, delta);
+                    weight = Math.max((LCS[i-1][j-1] + weight), delta);
+                    LCS[i][j] = weight;
                 }
+//            for (j=0; j<n; j++)
+//            {
+//                char s1Char = s1.charAt(i);
+//                char s2Char = s2.charAt(j);
+//                double weight = delta;
+//                if (i == 0 || j == 0){
+//                    if(s1Char == s2Char){
+//                        weight = letterFrequency.get(s1Char);
+//                    }
+//                    LCS[i][j] = weight;
+//                }else{
+//                    if(s1Char == s2Char) {
+//                        weight = letterFrequency.get(s1Char);
+//                    }
+//                    if(LCS[i-1][j-1]>=0){
+//                        weight = Math.max(delta,(LCS[i-1][j-1] + weight));
+//                    }
+//
+//                    LCS[i][j] = weight;
+//                }
                 if(maxWeight < weight){
                     maxWeight = weight;
                     max_i = i;
@@ -85,7 +100,7 @@ public class WeightedCommonSubstring {
             j--;
         }
 
-        System.out.println("\n Longest Common Substring is "+ s1.substring(i, max_i+1)+" with weight "+ maxWeight );
+        System.out.println("\n LCS for "+s1+" "+ s2+" is "+ s1.substring(i, max_i+1)+" with weight "+ maxWeight );
     }
 
     private void printMatrix(double[][] matrix){
@@ -126,14 +141,15 @@ public class WeightedCommonSubstring {
 
             sb.append("time");
             sb.append('\n');
-
+            int m;
+            int n;
             long totalTime = 0;
             for (int i = 10; i < length; i= i + 10) {
                 sb.append(i * i);
                 sb.append(",");
                 totalTime = 0;
-                System.out.println("iteration number: " + i);
-                for (int k = 0; k < 10; k++) {
+//                System.out.println("iteration number: " + i);
+                for (int j = 0; j < 10; j++) {
                     String first = randomStrGenerator(i);
                     String second = randomStrGenerator(i);
 
@@ -147,7 +163,7 @@ public class WeightedCommonSubstring {
                 sb.append('\n');
 
             }
-            String show = sb.toString();
+
             writer.write(sb.toString());
             writer.close();
             System.out.println("done!");
@@ -157,6 +173,49 @@ public class WeightedCommonSubstring {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+
+//        try {
+//            PrintWriter writer = new PrintWriter(new FileWriter("test.csv"));
+//            StringBuilder sb = new StringBuilder();
+//            sb.append("m*n,");
+//
+//            sb.append("time");
+//            sb.append('\n');
+//            int m;
+//            int n;
+//            long totalTime = 0;
+//            for (int i = 10; i < length; i= i + 10) {
+//                sb.append(i * i);
+//                sb.append(",");
+//                totalTime = 0;
+//                System.out.println("iteration number: " + i);
+//                for (int j = 0; j < 10; j++) {
+//                    String first = randomStrGenerator(i);
+//                    String second = randomStrGenerator(i);
+//
+//                    long start = System.nanoTime();
+//                    weightedCommonSubstring.getLongestCommonSubstring(first.toUpperCase(), second.toUpperCase());
+//                    long end = System.nanoTime();
+//                    totalTime += (end - start) ;
+//
+//                }
+//                sb.append(totalTime/10);
+//                sb.append('\n');
+//
+//            }
+//
+//            String show = sb.toString();
+//            writer.write(sb.toString());
+//            writer.close();
+//            System.out.println("done!");
+//        }catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+
     }
 
 }
