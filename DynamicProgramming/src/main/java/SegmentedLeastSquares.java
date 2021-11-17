@@ -8,8 +8,13 @@ public class SegmentedLeastSquares {
     float[] M;
     float[] sumArray;
     float[] squareSumArray;
+    List<Point> points;
 
-    public void initErrorArrays(List<Point> points){
+    public SegmentedLeastSquares(List<Point> points){
+        this.points = points;
+    }
+
+    public void initErrorArrays(){
         int n = points.size();
         sumArray = new float[n];
         squareSumArray = new float[n];
@@ -25,7 +30,7 @@ public class SegmentedLeastSquares {
             }
         }
     }
-    private float computeSSE(int start, int end, List<Point> p){
+    private float computeSSE(int start, int end){
         float sse = 0;
         int i = 0;
         int n = end - start+1;
@@ -42,7 +47,7 @@ public class SegmentedLeastSquares {
         return sse;
     }
 
-    public void computeSseMatrix(List<Point> points){
+    public void computeSseMatrix(){
         int n = points.size();
         sseMatrix = new float[n][n];
         for(int i=0; i<n; i++){
@@ -52,7 +57,7 @@ public class SegmentedLeastSquares {
         }
         for(int j = 0; j<n; j++){
             for (int i =0; i<j; i++){
-                sseMatrix[i][j] = computeSSE(i, j, points);
+                sseMatrix[i][j] = computeSSE(i, j);
             }
         }
 
@@ -64,7 +69,8 @@ public class SegmentedLeastSquares {
         }
     }
 
-    public void getOptimumError(int n, float c){
+    public void getOptimumError(float c){
+        int n = points.size();
         M = new float[n+1];
         M[0] = 0;
         float min;
@@ -92,7 +98,7 @@ public class SegmentedLeastSquares {
         }
     }
 
-    public void findSegment(List<Point> points, int c){
+    public void findSegment(int c){
         int j = (points.size());
         while(j>0){
             //list of all previous costs
@@ -112,7 +118,6 @@ public class SegmentedLeastSquares {
     }
 
     public static void main(String[] args) {
-        SegmentedLeastSquares segmentedLeastSquares = new SegmentedLeastSquares();
         List<Point> points = new ArrayList<Point>();
         points.add(new Point(0,0));
         points.add(new Point(1,1));
@@ -124,10 +129,11 @@ public class SegmentedLeastSquares {
         points.add(new Point(7,7));
         points.add(new Point(8,8));
         points.add(new Point(9,9));
-        segmentedLeastSquares.initErrorArrays(points);
-        segmentedLeastSquares.computeSseMatrix(points);
-        segmentedLeastSquares.getOptimumError(points.size(), 10);
-        segmentedLeastSquares.findSegment(points, 10);
+        SegmentedLeastSquares segmentedLeastSquares = new SegmentedLeastSquares(points);
+        segmentedLeastSquares.initErrorArrays();
+        segmentedLeastSquares.computeSseMatrix();
+        segmentedLeastSquares.getOptimumError(10);
+        segmentedLeastSquares.findSegment(10);
     }
 
 }

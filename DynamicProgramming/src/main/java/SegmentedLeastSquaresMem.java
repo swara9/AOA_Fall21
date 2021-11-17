@@ -8,6 +8,7 @@ import java.util.HashMap;
 public class SegmentedLeastSquaresMem {
 
     float[][] sseMatrix;
+    float[] Mem;
     float[] M;
     float[] sumArray;
     float[] squareSumArray;
@@ -26,11 +27,11 @@ public class SegmentedLeastSquaresMem {
         squareSumArray = new float[n]
         ;
         //Initializing opt array
-        M = new float[n+1];
+        Mem = new float[n+1];
         for (int i = 0; i <n+1 ; i++) {
-            M[i] = -1;
+            Mem[i] = -1;
         }
-        M[0] = 0;
+        Mem[0] = 0;
 
         //Initializing mean squared error
         for (int i = 0; i < n; i++) {
@@ -84,20 +85,48 @@ public class SegmentedLeastSquaresMem {
         }
     }
 
+    public void getOptimumError(int n, float c){
+        M = new float[n+1];
+        M[0] = 0;
+        float min;
+        float error;
+        for (int j = 1; j <= n; j++) {
+            min = Float.MAX_VALUE;
+
+            //get all previous errors
+            for(int i = 1; i<=j; i++){
+                if(i==1){
+                    error = sseMatrix[i-1][j-1]+c;
+                }else{
+                    error = sseMatrix[i-1][j-1]+ c + M[i-1];
+                }
+                if(error<min){
+                    min = error;
+                }
+            }
+            M[j] = min;
+        }
+
+        System.out.println("\nError matrix: ");
+        for (int i=0; i<n+1; i++){
+            System.out.print(M[i] +"\t");
+        }
+    }
+
     public float computeOpt(int j, float c){
         List<Float> previousErrors;
         if(j == 0){
             return 0;
         }
-        if(M[j]!=-1){
-            return M[j];
+        if(Mem[j]!=-1){
+            return Mem[j];
         }
         previousErrors = new ArrayList<Float>();
         for (int i = 1; i <=j ; i++) {
             previousErrors.add(sseMatrix[i-1][j-1]+c+ computeOpt(i-1, c));
         }
-        M[j] = Collections.min(previousErrors);
-        return M[j];
+        Mem[j] = Collections.min(previousErrors);
+        return Mem[j];
     }
 
     public float computeOptMap(int j, Map<Integer, Float> partitionMap) {
@@ -124,7 +153,7 @@ public class SegmentedLeastSquaresMem {
             //list of all previous costs
             List<Float> segCosts = new ArrayList<Float>();
             for(int i=1; i<=j; i++){
-                segCosts.add(sseMatrix[i-1][j-1]+c+M[i-1]);
+                segCosts.add(sseMatrix[i-1][j-1]+c+ Mem[i-1]);
             }
             //find min in list as i and output that segment
             float  min = Collections.min(segCosts);
@@ -173,7 +202,7 @@ public class SegmentedLeastSquaresMem {
         //without hashmap
         segmentedLeastSquares.computeOpt(points.size(), 10);
         for (int i=0; i<points.size()+1; i++){
-            System.out.print(segmentedLeastSquares.M[i] +"\t");
+            System.out.print(segmentedLeastSquares.Mem[i] +"\t");
         }
         segmentedLeastSquares.findSegment();
 

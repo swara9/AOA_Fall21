@@ -1,13 +1,15 @@
+import java.io.*;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
 
 public class WeightedCommonSubstring {
 
     Map<Character, Double> letterFrequency;
-    int delta;
+    float delta;
 
-    public WeightedCommonSubstring(){
+    public WeightedCommonSubstring(float delta){
         letterFrequency = new HashMap<Character, Double>();
         letterFrequency.put('A', 8.12);
         letterFrequency.put('B', 1.49);
@@ -35,7 +37,7 @@ public class WeightedCommonSubstring {
         letterFrequency.put('X', 0.17);
         letterFrequency.put('Y', 2.11);
         letterFrequency.put('Z', 0.07);
-        delta = -3;
+        this.delta = delta;
     }
 
     void getLongestCommonSubstring(String s1, String s2) {
@@ -75,11 +77,10 @@ public class WeightedCommonSubstring {
                 }
             }
         }
-//        printMatrix(weightMatrix);
 
         i = max_i;
         j = max_j;
-        while(LCS[i-1][j-1]>0 && i>=0 && j>=0){
+        while(i>0 && j>0 && LCS[i-1][j-1]>0){
             i--;
             j--;
         }
@@ -96,9 +97,66 @@ public class WeightedCommonSubstring {
         }
     }
 
+    public static String randomStrGenerator(int len) {
+        StringBuilder sc = new StringBuilder();
+        for (int i = 0; i < len; i++) {
+            char c = (char) Math.floor(Math.random()*(90-65+1)+65);
+            sc.append(c);
+        }
+        return sc.toString();
+    }
+
     public static void main(String[] args) {
-        WeightedCommonSubstring weightedCommonSubstring = new WeightedCommonSubstring();
-        weightedCommonSubstring.getLongestCommonSubstring("BCDJEFAD", "BEGAEFHD");
+//        WeightedCommonSubstring weightedCommonSubstring = new WeightedCommonSubstring(-3);
+//        weightedCommonSubstring.getLongestCommonSubstring("BCDJEFAD", "BEGAEFHD");
+        System.out.println("Enter penalty value for this test run");
+        Scanner sc = new Scanner(System.in);
+        float delta = sc.nextFloat();
+        WeightedCommonSubstring weightedCommonSubstring = new WeightedCommonSubstring(delta);
+
+        System.out.println("Enter max length of string");
+        int length = sc.nextInt();
+
+
+
+        try {
+            PrintWriter writer = new PrintWriter(new FileWriter("test.csv"));
+            StringBuilder sb = new StringBuilder();
+            sb.append("m*n,");
+
+            sb.append("time");
+            sb.append('\n');
+
+            long totalTime = 0;
+            for (int i = 10; i < length; i= i + 10) {
+                sb.append(i * i);
+                sb.append(",");
+                totalTime = 0;
+                System.out.println("iteration number: " + i);
+                for (int k = 0; k < 10; k++) {
+                    String first = randomStrGenerator(i);
+                    String second = randomStrGenerator(i);
+
+                    long start = System.nanoTime();
+                    weightedCommonSubstring.getLongestCommonSubstring(first.toUpperCase(), second.toUpperCase());
+                    long end = System.nanoTime();
+                    totalTime += (end - start) ;
+
+                }
+                sb.append(totalTime/10);
+                sb.append('\n');
+
+            }
+            String show = sb.toString();
+            writer.write(sb.toString());
+            writer.close();
+            System.out.println("done!");
+        }catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 }
