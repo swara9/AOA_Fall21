@@ -65,26 +65,6 @@ public class WeightedCommonSubstring {
                     weight = Math.max((LCS[i-1][j-1] + weight), delta);
                     LCS[i][j] = weight;
                 }
-//            for (j=0; j<n; j++)
-//            {
-//                char s1Char = s1.charAt(i);
-//                char s2Char = s2.charAt(j);
-//                double weight = delta;
-//                if (i == 0 || j == 0){
-//                    if(s1Char == s2Char){
-//                        weight = letterFrequency.get(s1Char);
-//                    }
-//                    LCS[i][j] = weight;
-//                }else{
-//                    if(s1Char == s2Char) {
-//                        weight = letterFrequency.get(s1Char);
-//                    }
-//                    if(LCS[i-1][j-1]>=0){
-//                        weight = Math.max(delta,(LCS[i-1][j-1] + weight));
-//                    }
-//
-//                    LCS[i][j] = weight;
-//                }
                 if(maxWeight < weight){
                     maxWeight = weight;
                     max_i = i;
@@ -99,15 +79,14 @@ public class WeightedCommonSubstring {
             i--;
             j--;
         }
-
-        System.out.println("\n LCS for "+s1+" "+ s2+" is "+ s1.substring(i, max_i+1)+" with weight "+ maxWeight );
+        System.out.println("\n LCS for "+s1+" "+ s2+" with penalty "+ -delta+" is "+ s1.substring(i, max_i+1)+", "+ s2.substring(j, max_j+1)+" of weight "+ maxWeight );
     }
 
     private void printMatrix(double[][] matrix){
         for (int i= 0; i< matrix[0].length; i++){
             System.out.println();
             for (int j=0; j< matrix.length; j++ ){
-                System.out.print(matrix[i][j]+"\t");
+                System.out.print(matrix[j][i]+"\t");
             }
         }
     }
@@ -122,100 +101,66 @@ public class WeightedCommonSubstring {
     }
 
     public static void main(String[] args) {
-//        WeightedCommonSubstring weightedCommonSubstring = new WeightedCommonSubstring(-3);
-//        weightedCommonSubstring.getLongestCommonSubstring("BCDJEFAD", "BEGAEFHD");
-        System.out.println("Enter penalty value for this test run");
-        Scanner sc = new Scanner(System.in);
-        float delta = sc.nextFloat();
-        WeightedCommonSubstring weightedCommonSubstring = new WeightedCommonSubstring(delta);
-
-        System.out.println("Enter max length of string");
-        int length = sc.nextInt();
-
-
-
-        try {
-            PrintWriter writer = new PrintWriter(new FileWriter("test.csv"));
-            StringBuilder sb = new StringBuilder();
-            sb.append("m*n,");
-
-            sb.append("time");
-            sb.append('\n');
-            int m;
-            int n;
-            long totalTime = 0;
-            for (int i = 10; i < length; i= i + 10) {
-                sb.append(i * i);
-                sb.append(",");
-                totalTime = 0;
-//                System.out.println("iteration number: " + i);
-                for (int j = 0; j < 10; j++) {
-                    String first = randomStrGenerator(i);
-                    String second = randomStrGenerator(i);
-
-                    long start = System.nanoTime();
-                    weightedCommonSubstring.getLongestCommonSubstring(first.toUpperCase(), second.toUpperCase());
-                    long end = System.nanoTime();
-                    totalTime += (end - start) ;
-
-                }
-                sb.append(totalTime/10);
-                sb.append('\n');
-
-            }
-
-            writer.write(sb.toString());
-            writer.close();
-            System.out.println("done!");
-        }catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        WeightedCommonSubstring weightedCommonSubstring = new WeightedCommonSubstring(-10);
+        if(args.length == 0){
+            System.out.println("Please enter proper parameters!");
         }
+        else {
+            if (args[0].equalsIgnoreCase("test")) {
+                if (args[1].equalsIgnoreCase("delta")) {
+                    float[] deltaArr = {0.5f, 2f, 3.5f, 4f, 5.5f, 6.5f, 7f, 8.5f, 9f, 10.5f, 11f, 12.f};
+                    for (int i = 0; i < deltaArr.length; i++) {
+                        weightedCommonSubstring.delta = -deltaArr[i];
+                        weightedCommonSubstring.getLongestCommonSubstring("ABCAABCAA", "ABBCAACCBBBBBB");
+                    }
+                } else {
+                    int length = Integer.parseInt(args[1]);
+                    weightedCommonSubstring.delta = -Float.parseFloat(args[2]);
+                    try {
+                        PrintWriter writer = new PrintWriter(new FileWriter("runTime_q1.csv"));
+                        StringBuilder sb = new StringBuilder();
+                        sb.append("m*n,");
 
+                        sb.append("time");
+                        sb.append('\n');
+                        int m;
+                        int n;
+                        long totalTime = 0;
+                        for (int i = 10; i < length; i = i + 10) {
+                            sb.append(i * i);
+                            sb.append(",");
+                            totalTime = 0;
+                            for (int j = 0; j < 10; j++) {
+                                String first = randomStrGenerator(i);
+                                String second = randomStrGenerator(i);
 
-//        try {
-//            PrintWriter writer = new PrintWriter(new FileWriter("test.csv"));
-//            StringBuilder sb = new StringBuilder();
-//            sb.append("m*n,");
-//
-//            sb.append("time");
-//            sb.append('\n');
-//            int m;
-//            int n;
-//            long totalTime = 0;
-//            for (int i = 10; i < length; i= i + 10) {
-//                sb.append(i * i);
-//                sb.append(",");
-//                totalTime = 0;
-//                System.out.println("iteration number: " + i);
-//                for (int j = 0; j < 10; j++) {
-//                    String first = randomStrGenerator(i);
-//                    String second = randomStrGenerator(i);
-//
-//                    long start = System.nanoTime();
-//                    weightedCommonSubstring.getLongestCommonSubstring(first.toUpperCase(), second.toUpperCase());
-//                    long end = System.nanoTime();
-//                    totalTime += (end - start) ;
-//
-//                }
-//                sb.append(totalTime/10);
-//                sb.append('\n');
-//
-//            }
-//
-//            String show = sb.toString();
-//            writer.write(sb.toString());
-//            writer.close();
-//            System.out.println("done!");
-//        }catch (FileNotFoundException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+                                long start = System.nanoTime();
+                                weightedCommonSubstring.getLongestCommonSubstring(first.toUpperCase(), second.toUpperCase());
+                                long end = System.nanoTime();
+                                totalTime += (end - start);
 
+                            }
+                            sb.append(totalTime / 10);
+                            sb.append('\n');
+
+                        }
+
+                        writer.write(sb.toString());
+                        writer.close();
+                        System.out.println("done!");
+                    } catch (FileNotFoundException e) {
+                        // TODO Auto-generated catch block
+                        e.printStackTrace();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            } else {
+                String s1 = args[0];
+                String s2 = args[1];
+                weightedCommonSubstring.delta = -Float.parseFloat(args[2]);
+                weightedCommonSubstring.getLongestCommonSubstring(s1.toUpperCase(), s2.toUpperCase());
+            }
+        }
     }
-
 }
