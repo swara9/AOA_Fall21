@@ -117,7 +117,7 @@ public class WeightedCommonSubstring {
                     int length = Integer.parseInt(args[1]);
                     weightedCommonSubstring.delta = -Float.parseFloat(args[2]);
                     try {
-                        PrintWriter writer = new PrintWriter(new FileWriter("runTime_q1.csv"));
+                        PrintWriter writer = new PrintWriter(new FileWriter("runtime_q1.csv"));
                         StringBuilder sb = new StringBuilder();
                         sb.append("m*n,");
 
@@ -147,7 +147,7 @@ public class WeightedCommonSubstring {
 
                         writer.write(sb.toString());
                         writer.close();
-                        System.out.println("done!");
+                        System.out.println("Result available in runtime_q1.csv!");
                     } catch (FileNotFoundException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();

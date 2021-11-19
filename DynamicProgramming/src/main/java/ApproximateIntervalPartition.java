@@ -77,12 +77,6 @@ public class ApproximateIntervalPartition {
             }
         }
 
-//        for(int i=0; i<n; i++){
-//            System.out.println();
-//            for(int j =0; j<n; j++){
-//                System.out.print(sseMatrix[i][j]+"\t");
-//            }
-//        }
     }
 
     public void computeOptTab(){
@@ -143,7 +137,6 @@ public class ApproximateIntervalPartition {
             int index = segCosts.indexOf(min);
             //print segment
             partitions.add(index);
-//            System.out.println("["+points.get(index).x+"-"+points.get(j-1).x+"]");
             //set j to i-1
             j = index;
         }
@@ -163,7 +156,6 @@ public class ApproximateIntervalPartition {
                 }
             }
             partitions.add(index-1);
-//            System.out.println("["+points.get(index-1).x+"-"+points.get(j-1).x+"]");
             j = index -1;
         }
     }
@@ -176,6 +168,7 @@ public class ApproximateIntervalPartition {
                 System.out.print(",");
             }
         }
+        System.out.print("]");
     }
 
     public void printPartitions(){
@@ -210,12 +203,12 @@ public class ApproximateIntervalPartition {
         if(args.length == 0){
             System.out.println("Please enter proper parameters!");
         }
-        else if(args.length == 2 && args[0].equalsIgnoreCase("test")) {
+        else if(args[0].equalsIgnoreCase("test")) {
             if (args[1].equalsIgnoreCase("runtime")) {
                 Random random = new Random();
-
+                int num = Integer.parseInt(args[2]);
                 try {
-                    PrintWriter writer = new PrintWriter(new FileWriter("question2.csv"));
+                    PrintWriter writer = new PrintWriter(new FileWriter("runtime_q2.csv.csv"));
                     StringBuilder sb = new StringBuilder();
                     sb.append("num of points,");
                     sb.append("penalty,");
@@ -223,7 +216,7 @@ public class ApproximateIntervalPartition {
                     sb.append("time(memoization(Array),");
                     sb.append("time(memoization(HashMap),");
                     sb.append('\n');
-                    for (int i = 50; i < 5000; i = i + 20) {
+                    for (int i = 50; i < num; i = i + 20) {
                         points = new ArrayList<Point>();
                         System.out.println("current iter:" + i);
                         sb.append(i + ",");
@@ -253,7 +246,7 @@ public class ApproximateIntervalPartition {
                     }
                     writer.write(sb.toString());
                     writer.close();
-                    System.out.println("done!");
+                    System.out.println("Result available in runtime_q2.csv!");
 
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
@@ -272,8 +265,6 @@ public class ApproximateIntervalPartition {
                 points.add(new Point(8, 8));
                 points.add(new Point(9, 9));
                 approximateIntervalPartition = new ApproximateIntervalPartition(10, points);
-                approximateIntervalPartition.getPartitions("tab");
-                approximateIntervalPartition.getPartitions("mem");
                 System.out.println("Points: ");
                 approximateIntervalPartition.printPoints();
                 float[] penalty = {1f, 5f, 10f, 50f};
