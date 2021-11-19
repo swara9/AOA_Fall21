@@ -8,10 +8,14 @@ public class ApproximateIntervalPartition {
     float[] sumArray;
     float[] squareSumArray;
     List<Point> points;
-    int c;
+    float c;
+    List<Integer> partitions;
 
+    public void setC(float c) {
+        this.c = c;
+    }
 
-    public ApproximateIntervalPartition(int penalty, List<Point> points){
+    public ApproximateIntervalPartition(float penalty, List<Point> points){
         c = penalty;
         this.points = points;
         int n = points.size();
@@ -81,7 +85,7 @@ public class ApproximateIntervalPartition {
 //        }
     }
 
-    public void getOptTabulation(){
+    public void computeOptTab(){
         int n = points.size();
         M = new float[n+1];
         M[0] = 0;
@@ -104,29 +108,10 @@ public class ApproximateIntervalPartition {
             M[j] = min;
         }
 
-//        System.out.println("\nError matrix: ");
-//        for (int i=0; i<n+1; i++){
-//            System.out.print(M[i] +"\t");
-//        }
     }
 
-    public float computeOptMem(int j){
-        List<Float> previousErrors;
-        if(j == 0){
-            return 0;
-        }
-        if(M[j]!=-1){
-            return M[j];
-        }
-        previousErrors = new ArrayList<Float>();
-        for (int i = 1; i <=j ; i++) {
-            previousErrors.add(sseMatrix[i-1][j-1]+c+ computeOptMem(i-1));
-        }
-        M[j] = Collections.min(previousErrors);
-        return M[j];
-    }
 
-    public float computeOptMemMap(int j, Map<Integer, Float> partitionMap) {
+    public float computeOptMem(int j, Map<Integer, Float> partitionMap) {
         if(j == 0){
             return 0;
         }
@@ -135,7 +120,7 @@ public class ApproximateIntervalPartition {
         }
         List<Float> previousErrors = new ArrayList<Float>();
         for (int i = 1; i <=j; i++) {
-            previousErrors.add(sseMatrix[i-1][j-1] + c + computeOptMemMap(i - 1, partitionMap));
+            previousErrors.add(sseMatrix[i-1][j-1] + c + computeOptMem(i - 1, partitionMap));
         }
         //opt[j] = Collections.min(prevErrors);
         partitionMap.put(j, Collections.min(previousErrors));
@@ -145,6 +130,7 @@ public class ApproximateIntervalPartition {
 
     public void findSegment(){
         int j = points.size();
+        partitions = new ArrayList<Integer>();
         while(j>0){
 
             //list of all previous costs
@@ -156,14 +142,16 @@ public class ApproximateIntervalPartition {
             float  min = Collections.min(segCosts);
             int index = segCosts.indexOf(min);
             //print segment
-            System.out.println("["+points.get(index).x+"-"+points.get(j-1).x+"]");
+            partitions.add(index);
+//            System.out.println("["+points.get(index).x+"-"+points.get(j-1).x+"]");
             //set j to i-1
             j = index;
         }
     }
 
-    public void findPartitions(Map<Integer, Float> partitionMap) {
+    public void findSegmentsMem(Map<Integer, Float> partitionMap) {
         int j = points.size();
+        partitions = new ArrayList<Integer>();
         while (j > 0) {
             float minCost = Float.MAX_VALUE;
             int index = j;
@@ -174,91 +162,147 @@ public class ApproximateIntervalPartition {
                     index = i;
                 }
             }
-            System.out.println("["+points.get(index-1).x+"-"+points.get(j-1).x+"]");
+            partitions.add(index-1);
+//            System.out.println("["+points.get(index-1).x+"-"+points.get(j-1).x+"]");
             j = index -1;
         }
     }
 
-    public static void main(String[] args) {
-//        List<Point> points = new ArrayList<Point>();
-//        points.add(new Point(0,0));
-//        points.add(new Point(1,1));
-//        points.add(new Point(2,2));
-//        points.add(new Point(3,3));
-//        points.add(new Point(4,4));
-//        points.add(new Point(5,5));
-//        points.add(new Point(6,6));
-//        points.add(new Point(7,7));
-//        points.add(new Point(8,8));
-//        points.add(new Point(9,9));
-        ApproximateIntervalPartition approximateIntervalPartition;
-        Random random = new Random();
-
-        try {
-            PrintWriter writer = new PrintWriter(new FileWriter("question2.csv"));
-            StringBuilder sb = new StringBuilder();
-            sb.append("num of points,");
-            sb.append("penalty,");
-            sb.append("time(tabulation),");
-            sb.append("time(memoization(Array),");
-            sb.append("time(memoization(HashMap),");
-            sb.append('\n');
-            List<Point> points;
-            for (int i = 50; i < 5000; i = i + 20) {
-                points = new ArrayList<Point>();
-                System.out.println("current iter:" + i);
-                sb.append(i + ",");
-
-                for (int j = 0; j < i; j++) {
-                    //points.add(new Point(random.nextInt(100), random.nextFloat() * 100));
-                    points.add(new Point(j + 1, random.nextFloat() * 100));
-                }
-                int penalty = random.nextInt(500);
-                sb.append(penalty + ",");
-
-                approximateIntervalPartition = new ApproximateIntervalPartition(penalty, points);
-                long start = System.nanoTime();
-                approximateIntervalPartition.initErrorArrays();
-                approximateIntervalPartition.computeSseMatrix();
-                approximateIntervalPartition.getOptTabulation();
-                approximateIntervalPartition.findSegment();
-                long end = System.nanoTime();
-                long tabulationTime = end - start;
-                sb.append(tabulationTime + ",");
-
-
-                approximateIntervalPartition = new ApproximateIntervalPartition(penalty, points);
-                long startMem = System.nanoTime();
-                approximateIntervalPartition.initErrorArrays();
-                approximateIntervalPartition.computeSseMatrix();
-                approximateIntervalPartition.computeOptMem(points.size());
-                approximateIntervalPartition.findSegment();
-                long endMem = System.nanoTime();
-                long memoizeTime = endMem - startMem;
-                sb.append(memoizeTime + ",");
-
-                approximateIntervalPartition = new ApproximateIntervalPartition(penalty, points);
-                long startMemHash = System.nanoTime();
-                approximateIntervalPartition.initErrorArrays();
-                approximateIntervalPartition.computeSseMatrix();
-                Map<Integer, Float> partitionMap = new HashMap<Integer, Float>();
-                partitionMap.put(0, 0f);
-                approximateIntervalPartition.computeOptMemMap(points.size(), partitionMap);
-                approximateIntervalPartition.findPartitions(partitionMap);
-                long endMemHash = System.nanoTime();
-                long memoizeTimeHash = endMemHash - startMemHash;
-                sb.append(memoizeTimeHash);
-                sb.append('\n');
-
+    public void printPoints(){
+        System.out.print("[");
+        for (int i = 0; i < points.size(); i++) {
+            System.out.print("("+points.get(i).x+", "+points.get(i).y+")");
+            if(i<points.size()-1){
+                System.out.print(",");
             }
-            writer.write(sb.toString());
-            writer.close();
-            System.out.println("done!");
+        }
+    }
 
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+    public void printPartitions(){
+        for (int i = (partitions.size()-1); i >= 0; i--) {
+//            System.out.println(partitions.get(i));
+            if(i==0){
+                System.out.print("["+partitions.get(i)+"-"+points.get(points.size()-1).x+"]");
+            } else{
+                System.out.print("["+partitions.get(i)+"-"+(partitions.get(i-1)-1)+"]");
+            }
+        }
+    }
+
+    public void getPartitions(String type){
+        initErrorArrays();
+        computeSseMatrix();
+        if("tab".equalsIgnoreCase(type)){
+            computeOptTab();
+            findSegment();
+            printPartitions();
+        } else{
+            Map<Integer, Float> partitionMap = new HashMap<Integer, Float>();
+            partitionMap.put(0,0f);
+            computeOptMem(points.size(),partitionMap);
+            findSegmentsMem(partitionMap);
+            printPartitions();
+        }
+    }
+    public static void main(String[] args) {
+        ApproximateIntervalPartition approximateIntervalPartition;
+        List<Point> points = new ArrayList<Point>();
+        if(args.length == 0){
+            System.out.println("Please enter proper parameters!");
+        }
+        else if(args.length == 2 && args[0].equalsIgnoreCase("test")) {
+            if (args[1].equalsIgnoreCase("runtime")) {
+                Random random = new Random();
+
+                try {
+                    PrintWriter writer = new PrintWriter(new FileWriter("question2.csv"));
+                    StringBuilder sb = new StringBuilder();
+                    sb.append("num of points,");
+                    sb.append("penalty,");
+                    sb.append("time(tabulation),");
+                    sb.append("time(memoization(Array),");
+                    sb.append("time(memoization(HashMap),");
+                    sb.append('\n');
+                    for (int i = 50; i < 5000; i = i + 20) {
+                        points = new ArrayList<Point>();
+                        System.out.println("current iter:" + i);
+                        sb.append(i + ",");
+
+                        for (int j = 0; j < i; j++) {
+                            //points.add(new Point(random.nextInt(100), random.nextFloat() * 100));
+                            points.add(new Point(j + 1, random.nextFloat() * 100));
+                        }
+                        int penalty = random.nextInt(500);
+                        sb.append(penalty + ",");
+
+                        approximateIntervalPartition = new ApproximateIntervalPartition(penalty, points);
+                        long start = System.nanoTime();
+                        approximateIntervalPartition.getPartitions("tab");
+                        long end = System.nanoTime();
+                        long tabulationTime = end - start;
+                        sb.append(tabulationTime + ",");
+
+                        approximateIntervalPartition = new ApproximateIntervalPartition(penalty, points);
+                        long startMemHash = System.nanoTime();
+                        approximateIntervalPartition.getPartitions("mem");
+                        long endMemHash = System.nanoTime();
+                        long memoizeTimeHash = endMemHash - startMemHash;
+                        sb.append(memoizeTimeHash);
+                        sb.append('\n');
+
+                    }
+                    writer.write(sb.toString());
+                    writer.close();
+                    System.out.println("done!");
+
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } else if (args[1].equalsIgnoreCase("penalty")) {
+                points.add(new Point(0, 0));
+                points.add(new Point(1, 1));
+                points.add(new Point(2, 2));
+                points.add(new Point(3, 3));
+                points.add(new Point(4, 4));
+                points.add(new Point(5, 5));
+                points.add(new Point(6, 6));
+                points.add(new Point(7, 7));
+                points.add(new Point(8, 8));
+                points.add(new Point(9, 9));
+                approximateIntervalPartition = new ApproximateIntervalPartition(10, points);
+                approximateIntervalPartition.getPartitions("tab");
+                approximateIntervalPartition.getPartitions("mem");
+                System.out.println("Points: ");
+                approximateIntervalPartition.printPoints();
+                float[] penalty = {1f, 5f, 10f, 50f};
+                for (int i = 0; i < penalty.length; i++) {
+                    approximateIntervalPartition.setC(penalty[i]);
+                    System.out.print("\n\nPenalty = " + penalty[i]);
+                    System.out.print("\nTabulation: ");
+                    approximateIntervalPartition.getPartitions("tab");
+                    System.out.print("\nMemoization: ");
+                    approximateIntervalPartition.getPartitions("mem");
+                }
+            }
+        }
+        else{
+            int num = Integer.parseInt(args[0]);
+            float penalty = Float.parseFloat(args[1]);
+            Random random = new Random();
+            for (int j = 0; j < num; j++) {
+                points.add(new Point(j + 1, random.nextInt(30)));
+            }
+            approximateIntervalPartition = new ApproximateIntervalPartition(penalty, points);
+            System.out.println("Points: ");
+            approximateIntervalPartition.printPoints();
+            System.out.print("\n\nPenalty = "+penalty);
+            System.out.print("\nTabulation: ");
+            approximateIntervalPartition.getPartitions("tab");
+            System.out.print("\nMemoization: ");
+            approximateIntervalPartition.getPartitions("mem");
+
         }
     }
 }
